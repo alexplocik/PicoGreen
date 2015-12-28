@@ -28,8 +28,9 @@ library(reshape2)
 
 
 # pico.green <- function(value, background.position = "A12", std.curve.position = c("B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8"), std.curve.conc = c(1, 1/2, 1/4, 1/8, 1/16, 1/32, 1/64, 1/128), group1 = "DBS", group1.pos = c("C1", "D1")){
-pico.green <- function(value, background.position = NULL, dilution.factor = NULL,
-                       std.curve.position = NULL, starting.conc = NULL, serial.dilution.factor = NULL,
+pico.green <- function(value, background.position = NULL, sample.dilution.factor = NULL,
+                       std.curve.position.1 = NULL, starting.conc.1 = NULL, serial.dilution.factor.1 = NULL,
+                       std.curve.position.2 = NULL, starting.conc.2 = NULL, serial.dilution.factor.2 = NULL,
                        group1 = NULL, group1.pos = NULL, 
                        group2 = NULL, group2.pos = NULL, 
                        group3 = NULL, group3.pos = NULL, 
@@ -44,15 +45,26 @@ pico.green <- function(value, background.position = NULL, dilution.factor = NULL
   
   value <- value %>% string2vector %>% as.numeric %>% na.omit
   background.position <- background.position %>% string2vector
-  std.curve.position <- std.curve.position %>% string2vector
-  starting.conc <- starting.conc %>% string2vector %>% as.numeric
-  serial.dilution.factor <- serial.dilution.factor %>% string2vector %>% as.numeric
+  std.curve.position.1 <- std.curve.position.1 %>% string2vector
+  std.curve.position.2 <- std.curve.position.2 %>% string2vector
+  starting.conc.1 <- starting.conc.1 %>% string2vector %>% as.numeric
+  starting.conc.2 <- starting.conc.2 %>% string2vector %>% as.numeric
+  serial.dilution.factor.1 <- serial.dilution.factor.1 %>% string2vector %>% as.numeric
+  serial.dilution.factor.2 <- serial.dilution.factor.2 %>% string2vector %>% as.numeric
   
   make.serial.dilution <- function(std.curve.position, starting.conc, serial.dilution.factor){
     do.call(function(x, y, z){z / (x ^ y)}, list(x = serial.dilution.factor, y = 0:(length(std.curve.position)-1), z = starting.conc))
   }
   
-  std.curve.conc <- make.serial.dilution(std.curve.position, starting.conc, serial.dilution.factor)
+  # if(length(serial.dilution.factor.1) > 1 & starting.conc.1 != "" & serial.dilution.factor.1 != ""){
+  std.curve.conc.1 <- make.serial.dilution(std.curve.position.1, starting.conc.1, serial.dilution.factor.1)
+  # } else {std.curve.conc.1 <- NULL}
+  # if(length(serial.dilution.factor.2) > 1 & starting.conc.2 != "" & serial.dilution.factor.2 != ""){
+  std.curve.conc.2 <- make.serial.dilution(std.curve.position.2, starting.conc.2, serial.dilution.factor.2)
+  # } else {std.curve.conc.2 <- NULL}
+  
+  std.curve.conc <- c(std.curve.conc.1, std.curve.conc.2)
+  std.curve.position <- c(std.curve.position.1, std.curve.position.2)
   
   well <- paste(rep(LETTERS[1:8], each = 12), rep(1:12), sep = "")
   value <- value
@@ -86,8 +98,8 @@ pico.green <- function(value, background.position = NULL, dilution.factor = NULL
   }
   
   # Dilution factor multiplication
-  if(!is.null(dilution.factor)){
-    a <- a %>% mutate(conc = conc * as.numeric(dilution.factor))
+  if(!is.null(sample.dilution.factor)){
+    a <- a %>% mutate(conc = conc * as.numeric(sample.dilution.factor))
   }
   
   # summary stats

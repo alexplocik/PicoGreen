@@ -9,14 +9,20 @@ shinyServer(function(input, output, session){
   table <- reactive ({
     validate(
       need(input$measurements != "", "Enter measurement data"),
-      need(input$std.curve.position %>% string2vector %>% length > 1, "Enter at least 2 standard curve well positions")
+      need(input$background.position != "", "Enter background measurement wells"),
+      need(input$sample.dilution.factor != "", "Enter sample dilution factor value"),
+      need(input$std.curve.position.1 %>% string2vector %>% length > 1 | input$std.curve.position.2 %>% string2vector %>% length > 1, "Enter at least 2 standard curve well positions")
     )
     
     pico.green(value = input$measurements,
                background.position = input$background.position,
-               std.curve.position = input$std.curve.position, input$dilution.factor,
-               starting.conc = input$starting.conc,
-               serial.dilution.factor = input$serial.dilution.factor,
+               sample.dilution.factor = input$sample.dilution.factor,
+               std.curve.position.1 = input$std.curve.position.1,
+               std.curve.position.2 = input$std.curve.position.2,
+               starting.conc.1 = input$starting.conc.1,
+               starting.conc.2 = input$starting.conc.2,
+               serial.dilution.factor.1 = input$serial.dilution.factor.1,
+               serial.dilution.factor.2 = input$serial.dilution.factor.2,
                group1 = input$group1, group1.pos = input$group1.pos,
                group2 = input$group2, group2.pos = input$group2.pos,
                group3 = input$group3, group3.pos = input$group3.pos,

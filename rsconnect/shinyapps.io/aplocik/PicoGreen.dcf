@@ -1,8 +1,8 @@
 name: PicoGreen
 account: aplocik
 server: shinyapps.io
-bundleId: 340239
+bundleId: 340267
 url: https://aplocik.shinyapps.io/PicoGreen
-when: 1451329913.83867
+when: 1451335704.4912
 asMultiple: FALSE
 asStatic: FALSE
