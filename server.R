@@ -34,10 +34,23 @@ shinyServer(function(input, output, session){
   
   # standard curve ggplot
   std.curve <- reactive ({
-    a <- table()$std.curve
-    ggplot(a[str_count (a$sample, "Std Curve") == 1, ],
-           aes(x = value, y = conc)) + 
+    a <- table()$std.curve # %>% mutate(x = value, y = conc)
+    b <- a[str_count(a$sample, "Std Curve") == 1, ]
+    
+    lm_eqn <- function(df){
+      df <- df %>% mutate(x = value, y = conc)
+      m <- lm(y ~ x, df);
+      eq <- substitute(#italic(y) == a + b %.% italic(x)*","~~italic(r)^2~"="~r2, 
+                       italic(r)^2~"="~r2, 
+                       list(#a = format(coef(m)[1], digits = 2), 
+                            #b = format(coef(m)[2], digits = 2), 
+                            r2 = format(summary(m)$r.squared, digits = 3)))
+      as.character(as.expression(eq));                 
+    }
+    
+    ggplot(b, aes(x = value, y = conc)) + 
       geom_smooth(method = "lm", color = "black", size = 0.5) + geom_point(alpha = 0.5, size = 4, shape = 1) +
+      annotate("text", x = min(b$value), y = max(b$conc), hjust = 0, label = lm_eqn(b), colour = "black", size = 5, parse=TRUE) +
       theme_bw()
   })
   
@@ -51,7 +64,7 @@ shinyServer(function(input, output, session){
   })
   
   # output variables
-  output$plate <- renderPrint({ plate() })
+  output$plate <- renderPrint({ round(plate(), 1) })
   output$table <- renderTable({ table()$sample_table })
   output$summary_stats <- renderTable({ table()$summary_table })
   output$std_curve <- renderPlot({ std.curve() })
