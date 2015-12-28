@@ -56,19 +56,19 @@ pico.green <- function(value, background.position = NULL, sample.dilution.factor
     do.call(function(x, y, z){z / (x ^ y)}, list(x = serial.dilution.factor, y = 0:(length(std.curve.position)-1), z = starting.conc))
   }
   
-  # if(length(serial.dilution.factor.1) > 1 & starting.conc.1 != "" & serial.dilution.factor.1 != ""){
+  if(length(std.curve.position.1) > 1 & !is.null(starting.conc.1) & !is.null(serial.dilution.factor.1)){
   std.curve.conc.1 <- make.serial.dilution(std.curve.position.1, starting.conc.1, serial.dilution.factor.1)
-  # } else {std.curve.conc.1 <- NULL}
-  # if(length(serial.dilution.factor.2) > 1 & starting.conc.2 != "" & serial.dilution.factor.2 != ""){
+  } else {std.curve.conc.1 <- NULL}
+  if(length(std.curve.position.2) > 1 & !is.null(starting.conc.2) & !is.null(serial.dilution.factor.2)){
   std.curve.conc.2 <- make.serial.dilution(std.curve.position.2, starting.conc.2, serial.dilution.factor.2)
-  # } else {std.curve.conc.2 <- NULL}
+  } else {std.curve.conc.2 <- NULL}
   
   std.curve.conc <- c(std.curve.conc.1, std.curve.conc.2)
   std.curve.position <- c(std.curve.position.1, std.curve.position.2)
   
   well <- paste(rep(LETTERS[1:8], each = 12), rep(1:12), sep = "")
   value <- value
-  sample <- rep("unknown", length(well))
+  sample <- rep("blank", length(well))
   
   # define all samples
   if(!is.null(std.curve.position)) { sample[which(match(well, std.curve.position) > 0)] <- paste("Std Curve", 1:length(std.curve.position)) }
@@ -103,9 +103,9 @@ pico.green <- function(value, background.position = NULL, sample.dilution.factor
   }
   
   # summary stats
-  b <- a %>% group_by(sample) %>% summarize(mean = mean(conc), sd = sd(conc), n = length(conc), y = mean, ymin = mean - sd, ymax = mean + sd)
+  b <- a %>% group_by(sample) %>% summarize(mean = mean(conc), sd = sd(conc), n = length(conc))#, y = mean, ymin = mean - sd, ymax = mean + sd)
   
-  list(table = a, sample_table = a[str_count (a$sample, "(Std Curve)|(unknown)") == 0, ], summary_table = b, std.curve = std.curve, model = model)
+  list(table = a, sample_table = a[str_count (a$sample, "(Std Curve)|(blank)") == 0, ], summary_table = b, std.curve = std.curve, model = model)
   
 }
 

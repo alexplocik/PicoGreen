@@ -7,7 +7,7 @@ shinyUI(
                       wellPanel(fluidRow(column(12,
                                                 column(2, textInput(inputId = "measurements", label = "Measurements (96-well plate)", value = "2740  1255	677	306	174	103	66	46	44	43	45	43 2730	1414	622	306	168	97	56	45	43	45	45	42 438	752	1064	454	609	929	360	538	566	35	40	37 575	714	968	483	618	957	406	611	606	38	37	37 192	40	222	1047	25	24	25	24	23	24	22	23 383	39	242	1039	22	23	24	24	25	23	23	23 24	21	23	23	23	22	26	23	23	22	23	22 22	22	24	23	22	22	23	24	23	22	22	24")),
                                                 column(2, textInput(inputId = "background.position", label = "Background wells", value = "A12 B12")),
-                                                column(2, textInput(inputId = "sample.dilution.factor", label = "Dilution factor value", value = "10"))))),
+                                                column(2, textInput(inputId = "sample.dilution.factor", label = "Sample dilution factor value", value = "10"))))),
                       wellPanel(fluidRow(column(12, 
                                                 column(2, textInput(inputId = "std.curve.position.1", label = "Standard curve wells", value = "A1 A2 A3 A4 A5 A6 A7 A8")),
                                                 column(2, textInput(inputId = "starting.conc.1", label = "Starting concentration", value = "1")),
